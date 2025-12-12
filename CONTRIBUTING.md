@@ -64,8 +64,25 @@ pip install -e ".[dev]"
 
 ### Running Tests
 
+#### Python Tests
+
 ```bash
 pytest
+```
+
+#### Client-Side (TypeScript) Tests
+
+```bash
+cd client
+
+# Run tests
+npm run test
+
+# Run with coverage
+npm run test:coverage
+
+# Watch mode for development
+npm run test:watch
 ```
 
 ### Running Matrix Tests Locally
@@ -548,14 +565,16 @@ Instead, we focus on:
 - **Why** it's important (context and motivation)
 - **How** it relates to other work (dependencies)
 
-## JavaScript Development
+## JavaScript/TypeScript Development
 
-Since this project integrates CodeMirror 6, JavaScript development is a key part:
+Since this project integrates CodeMirror 6, TypeScript development is a key part:
 
-### Setting Up JavaScript Development
+### Setting Up Client Development
 
 ```bash
-# Install Node.js dependencies (when package.json is added)
+cd client
+
+# Install dependencies
 npm install
 
 # Build JavaScript bundle
@@ -563,13 +582,47 @@ npm run build
 
 # Watch for changes during development
 npm run dev
+
+# Type check
+npm run typecheck
+
+# Lint
+npm run lint
+
+# Run tests
+npm run test
 ```
 
-### JavaScript Code Style
+### JavaScript/TypeScript Code Style
 
-- Use ES6+ syntax
-- Follow ESLint configuration
-- Write JSDoc comments for public APIs
+| Item | Standard |
+|------|----------|
+| Language | TypeScript |
+| Formatter/Linter | [Biome](https://biomejs.dev/) |
+| Test Framework | [Vitest](https://vitest.dev/) |
+| Indent | 2 spaces |
+| Quotes | Single quotes |
+| Semicolons | None (ASI) |
+
+### Client Test Structure
+
+```
+client/
+├── src/
+│   ├── index.ts           # Main module
+│   ├── index.test.ts      # Tests for main module
+│   ├── telepath.ts        # Wagtail Telepath adapter
+│   └── styles.css         # Editor styles
+├── vitest.config.ts       # Vitest configuration
+└── package.json
+```
+
+### Client Coverage Target
+
+Coverage targets are **goals**, not CI requirements. CI will not fail based on coverage.
+
+- Overall: 90%+
+- Core functions (initEditor, initAll): 95%+
 
 ## Milestones and Roadmap
 
