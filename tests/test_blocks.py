@@ -2,7 +2,9 @@
 Tests for EnhancedHTMLBlock.
 """
 
+import wagtail_html_editor.wagtail_hooks  # noqa: F401
 from wagtail_html_editor import EnhancedHTMLBlock
+from wagtail_html_editor.telepath import EnhancedHTMLWidgetAdapter
 from wagtail_html_editor.widgets import EnhancedHTMLWidget
 
 
@@ -92,3 +94,35 @@ class TestEnhancedHTMLWidget:
         widget = EnhancedHTMLWidget()
         js = widget.media._js
         assert "wagtail_html_editor/js/wagtail-html-editor.iife.js" in js
+
+
+class TestEnhancedHTMLWidgetAdapter:
+    """Tests for EnhancedHTMLWidgetAdapter (Telepath)."""
+
+    def test_adapter_js_constructor(self):
+        """Test that adapter has correct JS constructor name."""
+        adapter = EnhancedHTMLWidgetAdapter()
+        assert (
+            adapter.js_constructor == "wagtail_html_editor.widgets.EnhancedHTMLWidget"
+        )
+
+    def test_adapter_js_args(self):
+        """Test that adapter returns correct JS arguments."""
+        adapter = EnhancedHTMLWidgetAdapter()
+        widget = EnhancedHTMLWidget()
+        args = adapter.js_args(widget)
+
+        assert len(args) == 1
+        # Should contain the rendered HTML template with placeholders
+        assert "__NAME__" in args[0]
+        assert "__ID__" in args[0]
+        assert "data-wagtail-html-editor" in args[0]
+
+    def test_adapter_js_args_contains_textarea(self):
+        """Test that adapter JS args contain a textarea element."""
+        adapter = EnhancedHTMLWidgetAdapter()
+        widget = EnhancedHTMLWidget()
+        args = adapter.js_args(widget)
+
+        assert "<textarea" in args[0]
+        assert "</textarea>" in args[0]

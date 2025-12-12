@@ -186,3 +186,6 @@ if (typeof window !== 'undefined') {
     window as unknown as { WagtailHtmlEditor: typeof WagtailHtmlEditor }
   ).WagtailHtmlEditor = WagtailHtmlEditor
 }
+
+// Import telepath adapter to ensure it's registered
+import './telepath'
