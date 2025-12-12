@@ -89,6 +89,28 @@ class ContentPage(Page):
 {% endfor %}
 ```
 
+## Migrating from RawHTMLBlock
+
+Already using Wagtail's `RawHTMLBlock`? Migration is simple - just replace the import and block class:
+
+```python
+# Before
+from wagtail.blocks import RawHTMLBlock
+
+body = StreamField([
+    ('html', RawHTMLBlock()),
+])
+
+# After
+from wagtail_html_editor.blocks import EnhancedHTMLBlock
+
+body = StreamField([
+    ('html', EnhancedHTMLBlock()),
+])
+```
+
+**No database migration needed!** As long as the block name (e.g., `'html'`) stays the same, your existing content will work seamlessly with the enhanced editor.
+
 ## Editor Features
 
 ### Syntax Highlighting
@@ -112,10 +134,10 @@ Expand abbreviations with Tab:
 
 ### Fullscreen Mode
 
-Click the expand button below the editor to enter fullscreen mode:
-- Uses the full left panel (excluding preview area)
-- "Done" button at the bottom to exit
-- ESC key also exits fullscreen
+Click the fullscreen button at the top-right of the editor:
+- Uses the full left panel (preserves preview area)
+- Press ESC or click Exit button to return
+- Smooth enter/exit animations
 
 ### Theme Support
 
