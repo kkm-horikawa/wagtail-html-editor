@@ -23,6 +23,7 @@ import {
   keymap,
   lineNumbers,
 } from '@codemirror/view'
+import { abbreviationTracker } from '@emmetio/codemirror6-plugin'
 
 /** Data attribute used to mark textareas for auto-initialization */
 const DATA_ATTR = 'data-wagtail-html-editor'
@@ -58,9 +59,10 @@ export interface EditorInstance {
 
 /**
  * Create base extensions for the editor
+ * @param options - Editor configuration options
  */
-function createBaseExtensions(): Extension[] {
-  return [
+function createBaseExtensions(options: EditorOptions = {}): Extension[] {
+  const extensions: Extension[] = [
     lineNumbers(),
     highlightActiveLine(),
     highlightActiveLineGutter(),
@@ -70,6 +72,13 @@ function createBaseExtensions(): Extension[] {
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
   ]
+
+  // Add Emmet support if enabled (default: true)
+  if (options.emmet !== false) {
+    extensions.push(abbreviationTracker())
+  }
+
+  return extensions
 }
 
 /**
@@ -106,7 +115,7 @@ export function initEditor(
   // Create the editor state
   const state = EditorState.create({
     doc: textarea.value,
-    extensions: [...createBaseExtensions(), syncToTextarea],
+    extensions: [...createBaseExtensions(options), syncToTextarea],
   })
 
   // Create the editor view
