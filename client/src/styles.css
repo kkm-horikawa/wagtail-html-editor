@@ -82,3 +82,22 @@
   background-color: rgba(255, 0, 0, 0.2);
   outline: 1px solid rgba(255, 0, 0, 0.5);
 }
+
+/* Emmet abbreviation tracker */
+.wagtail-html-editor .emmet-tracker {
+  text-decoration: underline 2px var(--w-color-secondary, #007d7e);
+}
+
+/* Emmet preview tooltip */
+.wagtail-html-editor .emmet-preview {
+  background-color: var(--w-color-surface-tooltip, #1a1a1a);
+  color: var(--w-color-text-button, #fff);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.wagtail-html-editor .emmet-preview_error {
+  color: var(--w-color-critical-200, #ff5a5a);
+}
