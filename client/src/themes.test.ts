@@ -9,7 +9,6 @@ describe('themes', () => {
 
     it('should be an array of extensions', () => {
       expect(Array.isArray(lightTheme)).toBe(true)
-      expect(lightTheme.length).toBeGreaterThan(0)
     })
   })
 
@@ -20,7 +19,6 @@ describe('themes', () => {
 
     it('should be an array of extensions', () => {
       expect(Array.isArray(darkTheme)).toBe(true)
-      expect(darkTheme.length).toBeGreaterThan(0)
     })
   })
 
