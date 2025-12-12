@@ -16,7 +16,7 @@ We take security vulnerabilities seriously. If you discover a security issue, pl
 
 Instead, use GitHub's Security Advisories feature:
 
-1. Go to the [Security tab](https://github.com/kkm-horikawa/wagtail-reusable-blocks/security) of this repository
+1. Go to the [Security tab](https://github.com/kkm-horikawa/wagtail-html-editor/security) of this repository
 2. Click "Report a vulnerability"
 3. Fill out the form with details about the vulnerability
 
@@ -24,7 +24,7 @@ Instead, use GitHub's Security Advisories feature:
 
 Please include the following information in your report:
 
-- Type of vulnerability (e.g., XSS, SQL injection, etc.)
+- Type of vulnerability (e.g., XSS, code injection, etc.)
 - Full paths of source file(s) related to the vulnerability
 - Step-by-step instructions to reproduce the issue
 - Proof-of-concept or exploit code (if possible)
@@ -45,17 +45,18 @@ Please include the following information in your report:
 
 ## Security Best Practices for Users
 
-When using wagtail-reusable-blocks:
+When using wagtail-html-editor:
 
 1. Always use the latest version
 2. Keep your Wagtail and Django installations up to date
 3. Follow Wagtail's security recommendations
-4. Validate and sanitize user input in custom block implementations
+4. Be cautious with user-generated HTML content (consider sanitization)
 
 ## Dependencies
 
 This package depends on:
 - Wagtail (follows Wagtail's security policy)
 - Django (follows Django's security policy)
+- CodeMirror 6 (client-side editor library)
 
 Please ensure you're using supported versions of these dependencies.

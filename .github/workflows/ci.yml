@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} / Django ${{ matrix.django-version }} / Wagtail ${{ matrix.wagtail-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        django-version: ["4.2", "5.1", "5.2"]
+        wagtail-version: ["6.4", "7.0", "7.2"]
+        exclude:
+          # Django 5.2 requires Python 3.11+
+          - python-version: "3.10"
+            django-version: "5.2"
+          # Python 3.14 only supported by Django 5.2
+          - python-version: "3.14"
+            django-version: "4.2"
+          - python-version: "3.14"
+            django-version: "5.1"
+          # Python 3.14 only supported by Wagtail 7.2
+          - python-version: "3.14"
+            wagtail-version: "6.4"
+          - python-version: "3.14"
+            wagtail-version: "7.0"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+          uv pip install "Django~=${{ matrix.django-version }}.0" "wagtail~=${{ matrix.wagtail-version }}.0"
+
+      - name: Run tests
+        run: |
+          .venv/bin/pytest --cov --cov-report=term --cov-report=xml || test $? -eq 5
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+
+      - name: Run ruff check
+        run: uv run ruff check .
+
+      - name: Run ruff format check
+        run: uv run ruff format --check .
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+
+      - name: Run mypy
+        run: uv run mypy src/
+
+  client-test:
+    name: Client Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Run TypeScript check
+        working-directory: client
+        run: npm run typecheck
+
+      - name: Run Biome lint
+        working-directory: client
+        run: npm run lint
+
+      - name: Run Vitest tests
+        working-directory: client
+        run: npm run test:coverage

@@ -218,26 +218,6 @@ This automatically replaces `RawHTMLBlock` with `EnhancedHTMLBlock` in your reus
 
 See our [CI configuration](.github/workflows/ci.yml) for the complete compatibility matrix.
 
-## Features by Version
-
-### v0.1.0 - MVP (Planned)
-- EnhancedHTMLBlock with CodeMirror 6
-- Syntax highlighting (HTML/CSS/JS)
-- Auto-indentation
-- Dark/Light mode support
-- Basic autocomplete
-
-### v0.2.0 - Enhanced Features (Planned)
-- Emmet support
-- Fullscreen mode
-- Line numbers toggle
-- Custom keybindings (vim, emacs)
-
-### v0.3.0 - Integration (Planned)
-- wagtail-reusable-blocks integration
-- Live preview support
-- Custom theme support
-
 ## Documentation
 
 - [Contributing Guide](CONTRIBUTING.md)
