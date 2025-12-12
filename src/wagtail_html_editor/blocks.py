@@ -5,7 +5,7 @@ Enhanced HTML blocks for Wagtail StreamField.
 from wagtail.blocks import RawHTMLBlock
 
 
-class EnhancedHTMLBlock(RawHTMLBlock):
+class EnhancedHTMLBlock(RawHTMLBlock):  # type: ignore[misc]
     """
     An enhanced HTML block with CodeMirror 6 editor integration.
 

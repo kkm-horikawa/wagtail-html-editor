@@ -4,39 +4,48 @@ Pytest configuration and fixtures for wagtail-html-editor tests.
 
 import pytest
 from django.contrib.auth import get_user_model
+from wagtail.models import Page, Site
+
+User = get_user_model()
 
 
 @pytest.fixture
 def admin_user(db):
-    """Create and return an admin user."""
-    User = get_user_model()
-    user = User.objects.create_superuser(
+    """Create an admin user for testing."""
+    return User.objects.create_superuser(
         username="admin",
         email="admin@example.com",
         password="password",
     )
-    return user
+
+
+@pytest.fixture
+def regular_user(db):
+    """Create a regular user for testing."""
+    return User.objects.create_user(
+        username="user",
+        email="user@example.com",
+        password="password",
+    )
 
 
 @pytest.fixture
 def root_page(db):
-    """Return the Wagtail root page."""
-    from wagtail.models import Page
-
-    return Page.objects.get(depth=1)
+    """Get or create the root page."""
+    try:
+        return Page.objects.get(depth=1)
+    except Page.DoesNotExist:
+        return Page.add_root(title="Root", slug="root")
 
 
 @pytest.fixture
 def site(db, root_page):
-    """Return the default Wagtail site."""
-    from wagtail.models import Site
-
-    site, _ = Site.objects.get_or_create(
-        is_default_site=True,
+    """Get or create the default site."""
+    site, created = Site.objects.get_or_create(
+        hostname="localhost",
         defaults={
-            "hostname": "localhost",
-            "port": 80,
             "root_page": root_page,
+            "is_default_site": True,
             "site_name": "Test Site",
         },
     )

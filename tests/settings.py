@@ -1,18 +1,23 @@
 """
-Django settings for wagtail-html-editor tests.
+Django settings for testing wagtail-html-editor.
+
+This is a minimal configuration for running tests.
 """
 
-SECRET_KEY = "test-secret-key-for-testing-only"
+import os
 
+# Build paths inside the project
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "test-secret-key-not-for-production"
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
-    }
-}
+ALLOWED_HOSTS: list[str] = []
 
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -20,18 +25,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Wagtail apps
+    "wagtail",
+    "wagtail.admin",
+    "wagtail.documents",
+    "wagtail.snippets",
+    "wagtail.users",
+    "wagtail.sites",
+    "wagtail.images",
+    "wagtail.embeds",
+    "wagtail.search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
-    "wagtail.embeds",
-    "wagtail.sites",
-    "wagtail.users",
-    "wagtail.snippets",
-    "wagtail.documents",
-    "wagtail.images",
-    "wagtail.search",
-    "wagtail.admin",
-    "wagtail",
     "taggit",
+    # Our app
     "wagtail_html_editor",
 ]
 
@@ -64,14 +71,32 @@ TEMPLATES = [
     },
 ]
 
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
+}
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS: list[dict[str, str]] = []
+
+# Internationalization
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-WAGTAIL_SITE_NAME = "Test Site"
-
-WAGTAILADMIN_BASE_URL = "http://localhost:8000"
-
+# Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Wagtail settings
+WAGTAIL_SITE_NAME = "Test Site"
