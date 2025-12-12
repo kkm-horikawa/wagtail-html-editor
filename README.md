@@ -131,21 +131,10 @@ All settings are optional. Configure via `WAGTAIL_HTML_EDITOR` in your Django se
 ```python
 # settings.py
 WAGTAIL_HTML_EDITOR = {
-    # Theme: "auto", "light", or "dark"
-    'THEME': 'auto',
-
-    # Enable/disable features
-    'EMMET_ENABLED': True,
-    'AUTOCOMPLETE_ENABLED': True,
-    'FULLSCREEN_ENABLED': True,
-    'LINE_NUMBERS': True,
-
-    # Editor behavior
-    'TAB_SIZE': 2,
-    'INDENT_WITH_TABS': False,
-
-    # Keybindings: "default", "vim", "emacs"
-    'KEYMAP': 'default',
+    "emmet": True,           # Enable Emmet abbreviation expansion
+    "indent_size": 2,        # Number of spaces per indent (2 or 4)
+    "indent_with_tabs": False,  # Use tabs instead of spaces
+    "theme": "auto",         # "auto", "light", or "dark"
 }
 ```
 
@@ -153,14 +142,10 @@ WAGTAIL_HTML_EDITOR = {
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `THEME` | `'auto'` | Color theme: "auto", "light", or "dark" |
-| `EMMET_ENABLED` | `True` | Enable Emmet abbreviation expansion |
-| `AUTOCOMPLETE_ENABLED` | `True` | Enable HTML/CSS autocomplete |
-| `FULLSCREEN_ENABLED` | `True` | Show fullscreen toggle button |
-| `LINE_NUMBERS` | `True` | Show line numbers |
-| `TAB_SIZE` | `2` | Number of spaces per tab |
-| `INDENT_WITH_TABS` | `False` | Use tabs instead of spaces |
-| `KEYMAP` | `'default'` | Keybindings style |
+| `emmet` | `True` | Enable Emmet abbreviation expansion |
+| `indent_size` | `2` | Number of spaces per indent (2 or 4) |
+| `indent_with_tabs` | `False` | Use tabs instead of spaces |
+| `theme` | `"auto"` | Color theme: "auto", "light", or "dark" |
 
 ## Integration with wagtail-reusable-blocks
 
@@ -188,25 +173,16 @@ This automatically replaces `RawHTMLBlock` with `EnhancedHTMLBlock` in your reus
 **Issue**: Tab doesn't expand Emmet abbreviations.
 
 **Solutions**:
-1. Ensure `EMMET_ENABLED` is `True` (default)
+1. Ensure `emmet` is `True` in settings (default)
 2. Check that the cursor is at the end of the abbreviation
 3. Some abbreviations may conflict with autocomplete - press Tab twice
-
-### Fullscreen Button Missing
-
-**Issue**: The expand/fullscreen button doesn't appear.
-
-**Solutions**:
-1. Ensure `FULLSCREEN_ENABLED` is `True` (default)
-2. Check if CSS is loading correctly
-3. The button appears below the editor textarea
 
 ### Theme Not Matching Wagtail
 
 **Issue**: Editor theme doesn't follow Wagtail's dark/light mode.
 
 **Solutions**:
-1. Ensure `THEME` is set to `'auto'` (default)
+1. Ensure `theme` is set to `"auto"` in settings (default)
 2. Reload the page after changing Wagtail's theme
 3. Check browser console for theme detection errors
 
