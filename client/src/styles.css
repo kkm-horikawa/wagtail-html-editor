@@ -254,6 +254,34 @@
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
+  animation: fullscreen-enter 0.2s ease-out;
+}
+
+@keyframes fullscreen-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fullscreen exit animation */
+.wagtail-html-editor--fullscreen-exit {
+  animation: fullscreen-exit 0.15s ease-in forwards;
+}
+
+@keyframes fullscreen-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
 
 .wagtail-html-editor--fullscreen .cm-editor {

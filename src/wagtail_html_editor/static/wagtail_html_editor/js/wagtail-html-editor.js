@@ -29731,11 +29731,27 @@ function createFullscreenButton(container) {
       }
     }
   };
+  const exitFullscreen = () => {
+    var _a2;
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
+    }
+    container.classList.remove(
+      "wagtail-html-editor--fullscreen",
+      "wagtail-html-editor--fullscreen-exit"
+    );
+    (_a2 = placeholder.parentNode) == null ? void 0 : _a2.insertBefore(container, placeholder);
+    placeholder.remove();
+    container.style.removeProperty("--form-side-width");
+    button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`;
+    button.setAttribute("aria-label", "Toggle fullscreen mode");
+  };
   button.addEventListener("click", () => {
-    var _a2, _b;
-    isFullscreen = !isFullscreen;
-    container.classList.toggle("wagtail-html-editor--fullscreen", isFullscreen);
-    if (isFullscreen) {
+    var _a2;
+    if (!isFullscreen) {
+      isFullscreen = true;
+      container.classList.add("wagtail-html-editor--fullscreen");
       (_a2 = container.parentNode) == null ? void 0 : _a2.insertBefore(placeholder, container);
       updateSidePanelWidth();
       const formSide = document.querySelector(".form-side");
@@ -29749,15 +29765,9 @@ function createFullscreenButton(container) {
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`;
       button.setAttribute("aria-label", "Exit fullscreen mode");
     } else {
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-        resizeObserver = null;
-      }
-      (_b = placeholder.parentNode) == null ? void 0 : _b.insertBefore(container, placeholder);
-      placeholder.remove();
-      container.style.removeProperty("--form-side-width");
-      button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`;
-      button.setAttribute("aria-label", "Toggle fullscreen mode");
+      isFullscreen = false;
+      container.classList.add("wagtail-html-editor--fullscreen-exit");
+      setTimeout(exitFullscreen, 150);
     }
   });
   container.appendChild(button);
