@@ -2,8 +2,6 @@
 Tests for EnhancedHTMLBlock.
 """
 
-import pytest
-
 from wagtail_html_editor import EnhancedHTMLBlock
 
 
