@@ -20,12 +20,7 @@ import {
   indentWithTab,
 } from '@codemirror/commands'
 import { html, htmlLanguage } from '@codemirror/lang-html'
-import {
-  bracketMatching,
-  defaultHighlightStyle,
-  indentUnit,
-  syntaxHighlighting,
-} from '@codemirror/language'
+import { bracketMatching, indentUnit } from '@codemirror/language'
 import type { Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
@@ -39,6 +34,7 @@ import {
   abbreviationTracker,
   emmetCompletionSource,
 } from '@emmetio/codemirror6-plugin'
+import { getTheme } from './themes'
 
 /** Data attribute used to mark textareas for auto-initialization */
 const DATA_ATTR = 'data-wagtail-html-editor'
@@ -86,7 +82,7 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     closeBrackets(),
     indentUnit.of('  '),
     html(),
-    syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+    getTheme(options.darkMode ?? false),
     autocompletion(),
   ]
 
