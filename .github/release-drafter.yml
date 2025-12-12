@@ -1,66 +1,70 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
 categories:
-  - title: 'Breaking Changes'
+  - title: "🚀 Features"
     labels:
-      - 'breaking'
-  - title: 'New Features'
+      - "enhancement"
+      - "implementation"
+  - title: "🐛 Bug Fixes"
     labels:
-      - 'enhancement'
-  - title: 'Bug Fixes'
+      - "bug"
+  - title: "📚 Documentation"
     labels:
-      - 'bug'
-  - title: 'Documentation'
+      - "documentation"
+      - "documentation-org"
+  - title: "🧹 Maintenance"
     labels:
-      - 'documentation'
-  - title: 'Dependencies'
-    labels:
-      - 'dependencies'
-  - title: 'Other Changes'
-    labels:
-      - '*'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+      - "cleanup"
+      - "organization"
+      - "automation"
+
+exclude-labels:
+  - "skip-changelog"
+
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&'
+
 version-resolver:
   major:
     labels:
-      - 'breaking'
+      - "priority:critical"
   minor:
     labels:
-      - 'enhancement'
+      - "enhancement"
+      - "implementation"
   patch:
     labels:
-      - 'bug'
-      - 'documentation'
-      - 'dependencies'
+      - "bug"
+      - "documentation"
+      - "cleanup"
+      - "organization"
   default: patch
+
+autolabeler:
+  - label: "documentation"
+    files:
+      - "*.md"
+      - "docs/**/*"
+    branch:
+      - "/docs\\/.+/"
+  - label: "bug"
+    branch:
+      - "/fix\\/.+/"
+      - "/bugfix\\/.+/"
+  - label: "enhancement"
+    branch:
+      - "/feat\\/.+/"
+      - "/feature\\/.+/"
+  - label: "automation"
+    branch:
+      - "/chore\\/.+/"
+
 template: |
   ## What's Changed
 
   $CHANGES
 
-  ## Contributors
-
-  $CONTRIBUTORS
+footer: |
 
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
-
-autolabeler:
-  - label: 'documentation'
-    files:
-      - '*.md'
-      - 'docs/**/*'
-  - label: 'bug'
-    branch:
-      - '/fix\/.+/'
-      - '/bugfix\/.+/'
-      - '/hotfix\/.+/'
-  - label: 'enhancement'
-    branch:
-      - '/feature\/.+/'
-  - label: 'dependencies'
-    files:
-      - 'pyproject.toml'
-      - 'uv.lock'
-exclude-labels:
-  - 'skip-changelog'
