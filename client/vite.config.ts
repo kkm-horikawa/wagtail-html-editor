@@ -6,21 +6,22 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'WagtailHtmlEditor',
-      fileName: 'wagtail-html-editor',
+      fileName: (format) =>
+        `js/wagtail-html-editor.${format === 'es' ? 'js' : 'iife.js'}`,
       formats: ['es', 'iife'],
     },
     outDir: resolve(
       __dirname,
-      '../src/wagtail_html_editor/static/wagtail_html_editor/js',
+      '../src/wagtail_html_editor/static/wagtail_html_editor',
     ),
-    emptyOutDir: true,
+    emptyOutDir: false,
     sourcemap: true,
     minify: 'esbuild',
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') {
-            return '../css/wagtail-html-editor.css'
+          if (assetInfo.name?.endsWith('.css')) {
+            return 'css/wagtail-html-editor.css'
           }
           return assetInfo.name ?? ''
         },

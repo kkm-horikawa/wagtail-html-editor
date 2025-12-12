@@ -1,0 +1,73 @@
+/**
+ * Wagtail HTML Editor - Base Styles
+ *
+ * These styles provide the foundation for the CodeMirror 6 editor
+ * within the Wagtail admin interface.
+ */
+
+/* Editor container */
+.wagtail-html-editor {
+  border: 1px solid var(--w-color-border-field-default, #ccc);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* CodeMirror editor */
+.wagtail-html-editor .cm-editor {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Editor focus state */
+.wagtail-html-editor .cm-editor.cm-focused {
+  outline: none;
+  border-color: var(--w-color-border-field-focus, #007d7e);
+  box-shadow: 0 0 0 2px var(--w-color-focus, rgba(0, 125, 126, 0.3));
+}
+
+/* Gutter (line numbers) */
+.wagtail-html-editor .cm-gutters {
+  background-color: var(--w-color-surface-field, #f5f5f5);
+  border-right: 1px solid var(--w-color-border-field-default, #e0e0e0);
+  color: var(--w-color-text-meta, #999);
+}
+
+/* Active line highlight */
+.wagtail-html-editor .cm-activeLine {
+  background-color: var(--w-color-surface-field-active, rgba(0, 0, 0, 0.03));
+}
+
+.wagtail-html-editor .cm-activeLineGutter {
+  background-color: var(--w-color-surface-field-active, rgba(0, 0, 0, 0.05));
+}
+
+/* Content area */
+.wagtail-html-editor .cm-content {
+  padding: 8px 0;
+}
+
+/* Scrollbar styling */
+.wagtail-html-editor .cm-scroller {
+  min-height: 200px;
+  max-height: 600px;
+  overflow: auto;
+}
+
+/* Selection */
+.wagtail-html-editor .cm-selectionBackground {
+  background-color: var(
+    --w-color-surface-button-default,
+    rgba(0, 125, 126, 0.2)
+  ) !important;
+}
+
+.wagtail-html-editor .cm-editor.cm-focused .cm-selectionBackground {
+  background-color: var(--w-color-surface-button-hover, rgba(0, 125, 126, 0.3)) !important;
+}
+
+/* Cursor */
+.wagtail-html-editor .cm-cursor {
+  border-left-color: var(--w-color-text-context, #333);
+}

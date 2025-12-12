@@ -5,6 +5,8 @@
  * with syntax highlighting, Emmet support, and fullscreen mode.
  */
 
+import './styles.css'
+
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
 import { html } from '@codemirror/lang-html'
 import type { Extension } from '@codemirror/state'
