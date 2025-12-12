@@ -71,3 +71,14 @@
 .wagtail-html-editor .cm-cursor {
   border-left-color: var(--w-color-text-context, #333);
 }
+
+/* Bracket matching */
+.wagtail-html-editor .cm-matchingBracket {
+  background-color: rgba(0, 125, 126, 0.2);
+  outline: 1px solid rgba(0, 125, 126, 0.5);
+}
+
+.wagtail-html-editor .cm-nonmatchingBracket {
+  background-color: rgba(255, 0, 0, 0.2);
+  outline: 1px solid rgba(255, 0, 0, 0.5);
+}

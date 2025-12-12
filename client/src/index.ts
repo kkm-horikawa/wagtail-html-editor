@@ -9,6 +9,11 @@ import './styles.css'
 
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
 import { html } from '@codemirror/lang-html'
+import {
+  bracketMatching,
+  defaultHighlightStyle,
+  syntaxHighlighting,
+} from '@codemirror/language'
 import type { Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
@@ -62,6 +67,8 @@ function createBaseExtensions(): Extension[] {
     history(),
     keymap.of([...defaultKeymap, ...historyKeymap]),
     html(),
+    syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+    bracketMatching(),
   ]
 }
 
