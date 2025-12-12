@@ -44,6 +44,16 @@ const DATA_ATTR = 'data-wagtail-html-editor'
 const DATA_INITIALIZED = 'data-wagtail-html-editor-initialized'
 
 /**
+ * Server-side configuration from Django settings
+ */
+export interface ServerConfig {
+  emmet?: boolean
+  indent_size?: number
+  indent_with_tabs?: boolean
+  theme?: 'auto' | 'light' | 'dark'
+}
+
+/**
  * Editor configuration options
  */
 export interface EditorOptions {
@@ -53,6 +63,63 @@ export interface EditorOptions {
   emmet?: boolean
   /** Enable fullscreen mode toggle */
   fullscreen?: boolean
+  /** Indent size (2 or 4 spaces) */
+  indentSize?: number
+  /** Use tabs instead of spaces */
+  indentWithTabs?: boolean
+}
+
+/**
+ * Parse server config from data-config attribute
+ */
+function parseServerConfig(textarea: HTMLTextAreaElement): ServerConfig {
+  const configAttr = textarea.getAttribute('data-config')
+  if (!configAttr) {
+    return {}
+  }
+  try {
+    return JSON.parse(configAttr) as ServerConfig
+  } catch {
+    console.warn('WagtailHtmlEditor: Invalid data-config JSON')
+    return {}
+  }
+}
+
+/**
+ * Merge server config with provided options
+ */
+function mergeConfig(
+  serverConfig: ServerConfig,
+  options: EditorOptions,
+): EditorOptions {
+  const merged: EditorOptions = { ...options }
+
+  // Apply server config as defaults (options override)
+  if (merged.emmet === undefined && serverConfig.emmet !== undefined) {
+    merged.emmet = serverConfig.emmet
+  }
+  if (
+    merged.indentSize === undefined &&
+    serverConfig.indent_size !== undefined
+  ) {
+    merged.indentSize = serverConfig.indent_size
+  }
+  if (
+    merged.indentWithTabs === undefined &&
+    serverConfig.indent_with_tabs !== undefined
+  ) {
+    merged.indentWithTabs = serverConfig.indent_with_tabs
+  }
+  if (merged.darkMode === undefined && serverConfig.theme !== undefined) {
+    if (serverConfig.theme === 'dark') {
+      merged.darkMode = true
+    } else if (serverConfig.theme === 'light') {
+      merged.darkMode = false
+    }
+    // 'auto' leaves darkMode undefined for auto-detection
+  }
+
+  return merged
 }
 
 /**
@@ -74,6 +141,11 @@ export interface EditorInstance {
  * @param options - Editor configuration options
  */
 function createBaseExtensions(options: EditorOptions = {}): Extension[] {
+  // Determine indent string based on options
+  const indentSize = options.indentSize ?? 2
+  const indentWithTabs = options.indentWithTabs ?? false
+  const indentStr = indentWithTabs ? '\t' : ' '.repeat(indentSize)
+
   const extensions: Extension[] = [
     lineNumbers(),
     highlightActiveLine(),
@@ -81,7 +153,7 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     history(),
     bracketMatching(),
     closeBrackets(),
-    indentUnit.of('  '),
+    indentUnit.of(indentStr),
     html(),
     autocompletion(),
   ]
@@ -134,10 +206,14 @@ export function initEditor(
     throw new Error('Editor already initialized on this textarea')
   }
 
+  // Parse server config and merge with options
+  const serverConfig = parseServerConfig(textarea)
+  const mergedOptions = mergeConfig(serverConfig, options)
+
   // Auto-detect dark mode if not explicitly set
   const resolvedOptions: EditorOptions = {
-    ...options,
-    darkMode: options.darkMode ?? detectWagtailDarkMode(),
+    ...mergedOptions,
+    darkMode: mergedOptions.darkMode ?? detectWagtailDarkMode(),
   }
 
   // Hide the original textarea
