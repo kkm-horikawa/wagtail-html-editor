@@ -2,7 +2,12 @@
 Custom widgets for wagtail-html-editor.
 """
 
+import json
+from typing import Any
+
 from django import forms
+
+from wagtail_html_editor.settings import get_config
 
 
 class EnhancedHTMLWidget(forms.Textarea):
@@ -23,6 +28,16 @@ class EnhancedHTMLWidget(forms.Textarea):
         if attrs:
             default_attrs.update(attrs)
         super().__init__(attrs=default_attrs)
+
+    def get_context(
+        self, name: str, value: Any, attrs: dict[str, Any] | None
+    ) -> dict[str, Any]:
+        """Add configuration to widget context."""
+        context = super().get_context(name, value, attrs)
+        # Add config as data attribute
+        config = get_config()
+        context["widget"]["attrs"]["data-config"] = json.dumps(config)
+        return context
 
     class Media:
         css = {
