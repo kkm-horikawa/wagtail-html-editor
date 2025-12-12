@@ -48,7 +48,10 @@ export function observeThemeChanges(callback: ThemeChangeCallback): () => void {
   // Observe changes to class attribute on html element (Wagtail uses w-theme-* classes)
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+      if (
+        mutation.type === 'attributes' &&
+        mutation.attributeName === 'class'
+      ) {
         const newIsDark = detectWagtailDarkMode()
         if (newIsDark !== currentIsDark) {
           currentIsDark = newIsDark
