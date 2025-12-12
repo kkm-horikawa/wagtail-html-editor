@@ -21,7 +21,7 @@ import {
 } from '@codemirror/commands'
 import { html, htmlLanguage } from '@codemirror/lang-html'
 import { bracketMatching, indentUnit } from '@codemirror/language'
-import type { Extension } from '@codemirror/state'
+import { Compartment, type Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
   EditorView,
@@ -34,6 +34,7 @@ import {
   abbreviationTracker,
   emmetCompletionSource,
 } from '@emmetio/codemirror6-plugin'
+import { detectWagtailDarkMode, observeThemeChanges } from './theme-detection'
 import { getTheme } from './themes'
 
 /** Data attribute used to mark textareas for auto-initialization */
@@ -82,7 +83,6 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     closeBrackets(),
     indentUnit.of('  '),
     html(),
-    getTheme(options.darkMode ?? false),
     autocompletion(),
   ]
 
@@ -134,6 +134,12 @@ export function initEditor(
     throw new Error('Editor already initialized on this textarea')
   }
 
+  // Auto-detect dark mode if not explicitly set
+  const resolvedOptions: EditorOptions = {
+    ...options,
+    darkMode: options.darkMode ?? detectWagtailDarkMode(),
+  }
+
   // Hide the original textarea
   textarea.style.display = 'none'
   textarea.setAttribute(DATA_INITIALIZED, 'true')
@@ -150,10 +156,17 @@ export function initEditor(
     }
   })
 
+  // Create a compartment for the theme so it can be changed dynamically
+  const themeCompartment = new Compartment()
+
   // Create the editor state
   const state = EditorState.create({
     doc: textarea.value,
-    extensions: [...createBaseExtensions(options), syncToTextarea],
+    extensions: [
+      ...createBaseExtensions(resolvedOptions),
+      themeCompartment.of(getTheme(resolvedOptions.darkMode ?? false)),
+      syncToTextarea,
+    ],
   })
 
   // Create the editor view
@@ -162,11 +175,23 @@ export function initEditor(
     parent: container,
   })
 
+  // Set up theme change observer (only if darkMode wasn't explicitly set)
+  let stopObserving: (() => void) | null = null
+  if (options.darkMode === undefined) {
+    stopObserving = observeThemeChanges((isDarkMode) => {
+      // Reconfigure only the theme compartment
+      view.dispatch({
+        effects: themeCompartment.reconfigure(getTheme(isDarkMode)),
+      })
+    })
+  }
+
   return {
     textarea,
     view,
-    options,
+    options: resolvedOptions,
     destroy: () => {
+      stopObserving?.()
       view.destroy()
       container.remove()
       textarea.removeAttribute(DATA_INITIALIZED)

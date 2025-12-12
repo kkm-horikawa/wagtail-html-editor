@@ -24,7 +24,7 @@ describe('initEditor', () => {
     expect(instance).toBeDefined()
     expect(instance.textarea).toBe(textarea)
     expect(instance.view).toBeDefined()
-    expect(instance.options).toEqual({})
+    expect(instance.options.darkMode).toBeDefined()
   })
 
   it('should hide the original textarea', () => {
