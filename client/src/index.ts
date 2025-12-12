@@ -17,6 +17,12 @@ import {
   lineNumbers,
 } from '@codemirror/view'
 
+/** Data attribute used to mark textareas for auto-initialization */
+const DATA_ATTR = 'data-wagtail-html-editor'
+
+/** Data attribute to mark textareas that have been initialized */
+const DATA_INITIALIZED = 'data-wagtail-html-editor-initialized'
+
 /**
  * Editor configuration options
  */
@@ -67,8 +73,14 @@ export function initEditor(
   textarea: HTMLTextAreaElement,
   options: EditorOptions = {},
 ): EditorInstance {
+  // Check if already initialized
+  if (textarea.hasAttribute(DATA_INITIALIZED)) {
+    throw new Error('Editor already initialized on this textarea')
+  }
+
   // Hide the original textarea
   textarea.style.display = 'none'
+  textarea.setAttribute(DATA_INITIALIZED, 'true')
 
   // Create a container for the editor
   const container = document.createElement('div')
@@ -101,7 +113,74 @@ export function initEditor(
     destroy: () => {
       view.destroy()
       container.remove()
+      textarea.removeAttribute(DATA_INITIALIZED)
       textarea.style.display = ''
     },
   }
+}
+
+/**
+ * Initialize editor on a textarea found by CSS selector.
+ * @param selector - CSS selector to find the textarea
+ * @param options - Editor configuration options
+ * @returns Editor instance or null if element not found
+ */
+export function initEditorBySelector(
+  selector: string,
+  options: EditorOptions = {},
+): EditorInstance | null {
+  const element = document.querySelector(selector)
+
+  if (!element) {
+    console.warn(
+      `WagtailHtmlEditor: No element found for selector "${selector}"`,
+    )
+    return null
+  }
+
+  if (!(element instanceof HTMLTextAreaElement)) {
+    console.warn(`WagtailHtmlEditor: Element "${selector}" is not a textarea`)
+    return null
+  }
+
+  return initEditor(element, options)
+}
+
+/**
+ * Initialize editors on all textareas with the data-wagtail-html-editor attribute.
+ * @param options - Editor configuration options (applied to all editors)
+ * @returns Array of editor instances
+ */
+export function initAll(options: EditorOptions = {}): EditorInstance[] {
+  const textareas = document.querySelectorAll<HTMLTextAreaElement>(
+    `textarea[${DATA_ATTR}]:not([${DATA_INITIALIZED}])`,
+  )
+  const instances: EditorInstance[] = []
+
+  for (const textarea of textareas) {
+    try {
+      const instance = initEditor(textarea, options)
+      instances.push(instance)
+    } catch (error) {
+      console.error('WagtailHtmlEditor: Failed to initialize editor', error)
+    }
+  }
+
+  return instances
+}
+
+/**
+ * Public API exposed to window for IIFE builds
+ */
+export const WagtailHtmlEditor = {
+  initEditor,
+  initEditorBySelector,
+  initAll,
+}
+
+// Expose to window for IIFE usage
+if (typeof window !== 'undefined') {
+  ;(
+    window as unknown as { WagtailHtmlEditor: typeof WagtailHtmlEditor }
+  ).WagtailHtmlEditor = WagtailHtmlEditor
 }
