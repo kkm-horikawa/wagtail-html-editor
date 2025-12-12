@@ -161,11 +161,32 @@ function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
     }
   }
 
-  button.addEventListener('click', () => {
-    isFullscreen = !isFullscreen
-    container.classList.toggle('wagtail-html-editor--fullscreen', isFullscreen)
+  const exitFullscreen = () => {
+    // Stop watching side panel resize
+    if (resizeObserver) {
+      resizeObserver.disconnect()
+      resizeObserver = null
+    }
 
-    if (isFullscreen) {
+    // Restore container to original position (before placeholder)
+    container.classList.remove(
+      'wagtail-html-editor--fullscreen',
+      'wagtail-html-editor--fullscreen-exit',
+    )
+    placeholder.parentNode?.insertBefore(container, placeholder)
+    placeholder.remove()
+
+    container.style.removeProperty('--form-side-width')
+    button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`
+    button.setAttribute('aria-label', 'Toggle fullscreen mode')
+  }
+
+  button.addEventListener('click', () => {
+    if (!isFullscreen) {
+      // Enter fullscreen
+      isFullscreen = true
+      container.classList.add('wagtail-html-editor--fullscreen')
+
       // Insert placeholder before container to mark original position
       container.parentNode?.insertBefore(placeholder, container)
 
@@ -187,19 +208,12 @@ function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`
       button.setAttribute('aria-label', 'Exit fullscreen mode')
     } else {
-      // Stop watching side panel resize
-      if (resizeObserver) {
-        resizeObserver.disconnect()
-        resizeObserver = null
-      }
+      // Exit fullscreen with animation
+      isFullscreen = false
+      container.classList.add('wagtail-html-editor--fullscreen-exit')
 
-      // Restore container to original position (before placeholder)
-      placeholder.parentNode?.insertBefore(container, placeholder)
-      placeholder.remove()
-
-      container.style.removeProperty('--form-side-width')
-      button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`
-      button.setAttribute('aria-label', 'Toggle fullscreen mode')
+      // Wait for animation to complete, then cleanup
+      setTimeout(exitFullscreen, 150)
     }
   })
 
