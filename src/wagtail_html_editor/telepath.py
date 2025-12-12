@@ -6,8 +6,15 @@ adapter that allows the widget to be dynamically created on the client side.
 """
 
 from django import forms
-from wagtail.admin.telepath import register
-from wagtail.admin.telepath.widgets import WidgetAdapter
+
+# Wagtail 7.1+ moved telepath imports to wagtail.admin.telepath
+# Fall back to old locations for backwards compatibility
+try:
+    from wagtail.admin.telepath import register
+    from wagtail.admin.telepath.widgets import WidgetAdapter
+except ImportError:
+    from wagtail.telepath import register
+    from wagtail.widget_adapters import WidgetAdapter
 
 from wagtail_html_editor.widgets import EnhancedHTMLWidget
 
