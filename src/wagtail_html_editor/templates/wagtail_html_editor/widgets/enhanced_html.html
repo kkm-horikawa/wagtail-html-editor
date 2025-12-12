@@ -1,0 +1,12 @@
+<textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+<script>
+(function() {
+    // Initialize editor when DOM is ready
+    if (typeof WagtailHtmlEditor !== 'undefined') {
+        var textarea = document.querySelector('textarea[name="{{ widget.name }}"]');
+        if (textarea && !textarea.hasAttribute('data-wagtail-html-editor-initialized')) {
+            WagtailHtmlEditor.initEditor(textarea);
+        }
+    }
+})();
+</script>
