@@ -68,6 +68,12 @@ describe('initEditor', () => {
     expect(instance.options.emmet).toBe(false)
   })
 
+  it('should accept darkMode option', () => {
+    const instance = initEditor(textarea, { darkMode: true })
+
+    expect(instance.options.darkMode).toBe(true)
+  })
+
   it('should sync editor content to textarea', () => {
     const instance = initEditor(textarea)
 
