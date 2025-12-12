@@ -7,11 +7,23 @@
 
 import './styles.css'
 
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
-import { html } from '@codemirror/lang-html'
+import {
+  acceptCompletion,
+  autocompletion,
+  closeBrackets,
+  completionKeymap,
+} from '@codemirror/autocomplete'
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentWithTab,
+} from '@codemirror/commands'
+import { html, htmlLanguage } from '@codemirror/lang-html'
 import {
   bracketMatching,
   defaultHighlightStyle,
+  indentUnit,
   syntaxHighlighting,
 } from '@codemirror/language'
 import type { Extension } from '@codemirror/state'
@@ -23,7 +35,10 @@ import {
   keymap,
   lineNumbers,
 } from '@codemirror/view'
-import { abbreviationTracker } from '@emmetio/codemirror6-plugin'
+import {
+  abbreviationTracker,
+  emmetCompletionSource,
+} from '@emmetio/codemirror6-plugin'
 
 /** Data attribute used to mark textareas for auto-initialization */
 const DATA_ATTR = 'data-wagtail-html-editor'
@@ -67,16 +82,43 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     highlightActiveLine(),
     highlightActiveLineGutter(),
     history(),
-    keymap.of([...defaultKeymap, ...historyKeymap]),
+    bracketMatching(),
+    closeBrackets(),
+    indentUnit.of('  '),
     html(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-    bracketMatching(),
+    autocompletion(),
   ]
 
   // Add Emmet support if enabled (default: true)
   if (options.emmet !== false) {
     extensions.push(abbreviationTracker())
+    // Add Emmet completions to HTML language data
+    extensions.push(
+      htmlLanguage.data.of({ autocomplete: emmetCompletionSource }),
+    )
   }
+
+  // Add keymaps
+  // Priority: 1. Completion keymap (Enter/arrows for popup)
+  //           2. Default keymap + history
+  //           3. Tab: try acceptCompletion first, then indent
+  extensions.push(
+    keymap.of([
+      ...completionKeymap,
+      ...defaultKeymap,
+      ...historyKeymap,
+      // Tab: accept completion if popup open, otherwise indent
+      {
+        key: 'Tab',
+        run: (view) => {
+          if (acceptCompletion(view)) return true
+          return indentWithTab.run?.(view) ?? false
+        },
+        shift: indentWithTab.shift,
+      },
+    ]),
+  )
 
   return extensions
 }
