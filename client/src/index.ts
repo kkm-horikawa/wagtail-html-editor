@@ -128,8 +128,12 @@ const ICON_COMPRESS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 2
 
 /**
  * Create fullscreen toggle button and attach to container
+ * Returns cleanup function to remove event listeners
  */
-function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
+function createFullscreenButton(container: HTMLElement): {
+  button: HTMLButtonElement
+  cleanup: () => void
+} {
   const button = document.createElement('button')
   button.type = 'button'
   button.className = 'wagtail-html-editor__fullscreen-toggle'
@@ -168,6 +172,9 @@ function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
       resizeObserver = null
     }
 
+    // Remove ESC key listener
+    document.removeEventListener('keydown', handleKeyDown)
+
     // Restore container to original position (before placeholder)
     container.classList.remove(
       'wagtail-html-editor--fullscreen',
@@ -179,6 +186,21 @@ function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
     container.style.removeProperty('--form-side-width')
     button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`
     button.setAttribute('aria-label', 'Toggle fullscreen mode')
+  }
+
+  const triggerExit = () => {
+    if (!isFullscreen) return
+    isFullscreen = false
+    container.classList.add('wagtail-html-editor--fullscreen-exit')
+    setTimeout(exitFullscreen, 150)
+  }
+
+  // ESC key handler
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && isFullscreen) {
+      e.preventDefault()
+      triggerExit()
+    }
   }
 
   button.addEventListener('click', () => {
@@ -205,22 +227,26 @@ function createFullscreenButton(container: HTMLElement): HTMLButtonElement {
       // Move container to body to escape any transform/contain contexts
       document.body.appendChild(container)
 
+      // Add ESC key listener
+      document.addEventListener('keydown', handleKeyDown)
+
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`
       button.setAttribute('aria-label', 'Exit fullscreen mode')
     } else {
-      // Exit fullscreen with animation
-      isFullscreen = false
-      container.classList.add('wagtail-html-editor--fullscreen-exit')
-
-      // Wait for animation to complete, then cleanup
-      setTimeout(exitFullscreen, 150)
+      triggerExit()
     }
   })
 
   // Insert button inside container (floating at top-right via CSS)
   container.appendChild(button)
 
-  return button
+  return {
+    button,
+    cleanup: () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      button.remove()
+    },
+  }
 }
 
 /**
@@ -353,7 +379,7 @@ export function initEditor(
   })
 
   // Create fullscreen toggle button
-  const fullscreenButton = createFullscreenButton(container)
+  const { cleanup: cleanupFullscreen } = createFullscreenButton(container)
 
   // Set up theme change observer (only if darkMode wasn't explicitly set)
   let stopObserving: (() => void) | null = null
@@ -372,8 +398,8 @@ export function initEditor(
     options: resolvedOptions,
     destroy: () => {
       stopObserving?.()
+      cleanupFullscreen()
       view.destroy()
-      fullscreenButton.remove()
       container.remove()
       textarea.removeAttribute(DATA_INITIALIZED)
       textarea.style.display = ''
