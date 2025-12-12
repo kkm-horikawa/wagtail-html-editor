@@ -101,3 +101,53 @@
 .wagtail-html-editor .emmet-preview_error {
   color: var(--w-color-critical-200, #ff5a5a);
 }
+
+/* Autocomplete tooltip */
+.cm-tooltip-autocomplete {
+  background-color: var(--w-color-surface-page, #fff);
+  border: 1px solid var(--w-color-border-field-default, #ccc);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 13px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cm-tooltip-autocomplete > ul {
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+}
+
+.cm-tooltip-autocomplete > ul > li {
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.cm-tooltip-autocomplete > ul > li[aria-selected="true"] {
+  background-color: var(
+    --w-color-surface-button-default,
+    rgba(0, 125, 126, 0.1)
+  );
+  color: var(--w-color-text-context, #333);
+}
+
+.cm-completionIcon {
+  width: 1.2em;
+  display: inline-block;
+  text-align: center;
+  margin-right: 4px;
+  opacity: 0.7;
+}
+
+.cm-completionLabel {
+  flex: 1;
+}
+
+.cm-completionDetail {
+  margin-left: 8px;
+  font-style: italic;
+  color: var(--w-color-text-meta, #666);
+}
