@@ -10,7 +10,7 @@ Wagtail's `RawHTMLBlock` is a simple textarea. While this simplicity is intentio
 
 **wagtail-html-editor** bridges this gap by providing a VS Code-like editing experience within Wagtail's admin. Syntax highlighting, auto-indentation, Emmet support, and fullscreen mode make HTML coding in the admin not just possible, but comfortable.
 
-This library is designed as a **standalone package** that can be used independently, while also serving as an optional enhancement for [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks).
+This library is designed as a **standalone package** that enhances Wagtail's HTML editing capabilities.
 
 ## Key Features
 
@@ -89,6 +89,28 @@ class ContentPage(Page):
 {% endfor %}
 ```
 
+## Migrating from RawHTMLBlock
+
+Already using Wagtail's `RawHTMLBlock`? Migration is simple - just replace the import and block class:
+
+```python
+# Before
+from wagtail.blocks import RawHTMLBlock
+
+body = StreamField([
+    ('html', RawHTMLBlock()),
+])
+
+# After
+from wagtail_html_editor.blocks import EnhancedHTMLBlock
+
+body = StreamField([
+    ('html', EnhancedHTMLBlock()),
+])
+```
+
+**No database migration needed!** As long as the block name (e.g., `'html'`) stays the same, your existing content will work seamlessly with the enhanced editor.
+
 ## Editor Features
 
 ### Syntax Highlighting
@@ -112,10 +134,10 @@ Expand abbreviations with Tab:
 
 ### Fullscreen Mode
 
-Click the expand button below the editor to enter fullscreen mode:
-- Uses the full left panel (excluding preview area)
-- "Done" button at the bottom to exit
-- ESC key also exits fullscreen
+Click the fullscreen button at the top-right of the editor:
+- Uses the full left panel (preserves preview area)
+- Press ESC or click Exit button to return
+- Smooth enter/exit animations
 
 ### Theme Support
 
@@ -146,16 +168,6 @@ WAGTAIL_HTML_EDITOR = {
 | `indent_size` | `2` | Number of spaces per indent (2 or 4) |
 | `indent_with_tabs` | `False` | Use tabs instead of spaces |
 | `theme` | `"auto"` | Color theme: "auto", "light", or "dark" |
-
-## Integration with wagtail-reusable-blocks
-
-If you're using [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks), install with the editor extra:
-
-```bash
-pip install wagtail-reusable-blocks[editor]
-```
-
-This automatically replaces `RawHTMLBlock` with `EnhancedHTMLBlock` in your reusable blocks.
 
 ## Troubleshooting
 
@@ -202,7 +214,6 @@ See our [CI configuration](.github/workflows/ci.yml) for the complete compatibil
 
 - [GitHub Repository](https://github.com/kkm-horikawa/wagtail-html-editor)
 - [Issue Tracker](https://github.com/kkm-horikawa/wagtail-html-editor/issues)
-- [Related: wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks)
 
 ## Contributing
 
@@ -216,5 +227,4 @@ BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 
 - [CodeMirror 6](https://codemirror.net/) - The code editor powering this package
 - [Emmet](https://emmet.io/) - The essential toolkit for web-developers
-- [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks) - Reusable content blocks with slot-based templating
 - [VS Code](https://code.visualstudio.com/) - The editing experience we aim to bring to Wagtail
