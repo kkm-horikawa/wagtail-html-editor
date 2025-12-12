@@ -10,7 +10,7 @@ Wagtail's `RawHTMLBlock` is a simple textarea. While this simplicity is intentio
 
 **wagtail-html-editor** bridges this gap by providing a VS Code-like editing experience within Wagtail's admin. Syntax highlighting, auto-indentation, Emmet support, and fullscreen mode make HTML coding in the admin not just possible, but comfortable.
 
-This library is designed as a **standalone package** that can be used independently, while also serving as an optional enhancement for [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks).
+This library is designed as a **standalone package** that enhances Wagtail's HTML editing capabilities.
 
 ## Key Features
 
@@ -169,16 +169,6 @@ WAGTAIL_HTML_EDITOR = {
 | `indent_with_tabs` | `False` | Use tabs instead of spaces |
 | `theme` | `"auto"` | Color theme: "auto", "light", or "dark" |
 
-## Integration with wagtail-reusable-blocks
-
-If you're using [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks), install with the editor extra:
-
-```bash
-pip install wagtail-reusable-blocks[editor]
-```
-
-This automatically replaces `RawHTMLBlock` with `EnhancedHTMLBlock` in your reusable blocks.
-
 ## Troubleshooting
 
 ### Editor Not Loading
@@ -224,7 +214,6 @@ See our [CI configuration](.github/workflows/ci.yml) for the complete compatibil
 
 - [GitHub Repository](https://github.com/kkm-horikawa/wagtail-html-editor)
 - [Issue Tracker](https://github.com/kkm-horikawa/wagtail-html-editor/issues)
-- [Related: wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks)
 
 ## Contributing
 
@@ -238,5 +227,4 @@ BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 
 - [CodeMirror 6](https://codemirror.net/) - The code editor powering this package
 - [Emmet](https://emmet.io/) - The essential toolkit for web-developers
-- [wagtail-reusable-blocks](https://github.com/kkm-horikawa/wagtail-reusable-blocks) - Reusable content blocks with slot-based templating
 - [VS Code](https://code.visualstudio.com/) - The editing experience we aim to bring to Wagtail
