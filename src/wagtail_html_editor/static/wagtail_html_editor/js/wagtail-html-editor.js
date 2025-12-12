@@ -29737,6 +29737,7 @@ function createFullscreenButton(container) {
       resizeObserver.disconnect();
       resizeObserver = null;
     }
+    document.removeEventListener("keydown", handleKeyDown);
     container.classList.remove(
       "wagtail-html-editor--fullscreen",
       "wagtail-html-editor--fullscreen-exit"
@@ -29746,6 +29747,18 @@ function createFullscreenButton(container) {
     container.style.removeProperty("--form-side-width");
     button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`;
     button.setAttribute("aria-label", "Toggle fullscreen mode");
+  };
+  const triggerExit = () => {
+    if (!isFullscreen) return;
+    isFullscreen = false;
+    container.classList.add("wagtail-html-editor--fullscreen-exit");
+    setTimeout(exitFullscreen, 150);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape" && isFullscreen) {
+      e.preventDefault();
+      triggerExit();
+    }
   };
   button.addEventListener("click", () => {
     var _a2;
@@ -29762,16 +29775,21 @@ function createFullscreenButton(container) {
         resizeObserver.observe(formSide);
       }
       document.body.appendChild(container);
+      document.addEventListener("keydown", handleKeyDown);
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`;
       button.setAttribute("aria-label", "Exit fullscreen mode");
     } else {
-      isFullscreen = false;
-      container.classList.add("wagtail-html-editor--fullscreen-exit");
-      setTimeout(exitFullscreen, 150);
+      triggerExit();
     }
   });
   container.appendChild(button);
-  return button;
+  return {
+    button,
+    cleanup: () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      button.remove();
+    }
+  };
 }
 function createBaseExtensions(options = {}) {
   const indentSize = options.indentSize ?? 2;
@@ -29847,7 +29865,7 @@ function initEditor(textarea, options = {}) {
     state,
     parent: container
   });
-  const fullscreenButton = createFullscreenButton(container);
+  const { cleanup: cleanupFullscreen } = createFullscreenButton(container);
   let stopObserving = null;
   if (options.darkMode === void 0) {
     stopObserving = observeThemeChanges((isDarkMode) => {
@@ -29862,8 +29880,8 @@ function initEditor(textarea, options = {}) {
     options: resolvedOptions,
     destroy: () => {
       stopObserving == null ? void 0 : stopObserving();
+      cleanupFullscreen();
       view.destroy();
-      fullscreenButton.remove();
       container.remove();
       textarea.removeAttribute(DATA_INITIALIZED);
       textarea.style.display = "";

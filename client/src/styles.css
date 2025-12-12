@@ -254,6 +254,7 @@
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
   animation: fullscreen-enter 0.2s ease-out;
 }
 
@@ -286,14 +287,16 @@
 
 .wagtail-html-editor--fullscreen .cm-editor {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
 .wagtail-html-editor--fullscreen .cm-scroller {
-  min-height: auto;
+  min-height: 0;
   max-height: none;
   flex: 1;
+  overflow: auto;
 }
 
 .wagtail-html-editor--fullscreen .wagtail-html-editor__fullscreen-toggle {
