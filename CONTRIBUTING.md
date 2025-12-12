@@ -99,14 +99,13 @@ tox -l
 
 ### Django Versions
 - **4.2** (LTS - Long Term Support until April 2026)
-- **5.0**
 - **5.1**
+- **5.2**
 
 ### Wagtail Versions
-- **5.2** (LTS - Long Term Support)
-- **6.2**
-- **6.3**
-- **6.4** (latest)
+- **6.4**
+- **7.0**
+- **7.2** (latest)
 
 ### Code Style
 
