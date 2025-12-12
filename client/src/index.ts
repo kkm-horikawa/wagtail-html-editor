@@ -43,7 +43,7 @@ export interface EditorInstance {
  */
 export function initEditor(
   textarea: HTMLTextAreaElement,
-  options: EditorOptions = {}
+  options: EditorOptions = {},
 ): EditorInstance {
   // Placeholder implementation
   console.log('WagtailHtmlEditor: initEditor called', { textarea, options })

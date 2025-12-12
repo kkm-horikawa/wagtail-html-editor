@@ -1,5 +1,5 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
-import { resolve } from 'path'
 
 export default defineConfig({
   build: {
@@ -9,7 +9,10 @@ export default defineConfig({
       fileName: 'wagtail-html-editor',
       formats: ['es', 'iife'],
     },
-    outDir: resolve(__dirname, '../src/wagtail_html_editor/static/wagtail_html_editor/js'),
+    outDir: resolve(
+      __dirname,
+      '../src/wagtail_html_editor/static/wagtail_html_editor/js',
+    ),
     emptyOutDir: true,
     sourcemap: true,
     minify: 'esbuild',

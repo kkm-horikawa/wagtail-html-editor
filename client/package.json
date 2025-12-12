@@ -7,9 +7,13 @@
     "dev": "vite build --watch",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
     "typescript": "^5.7.0",
     "vite": "^6.0.0"
   },
