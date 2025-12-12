@@ -16,7 +16,14 @@ export default defineConfig({
     ),
     emptyOutDir: false,
     sourcemap: true,
-    minify: 'esbuild',
+    minify: 'terser',
+    terserOptions: {
+      mangle: {
+        // Avoid using $ as it conflicts with jQuery in Wagtail admin
+        reserved: ['$', 'jQuery'],
+        keep_classnames: true,
+      },
+    },
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {

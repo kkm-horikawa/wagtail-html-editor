@@ -151,3 +151,158 @@
   font-style: italic;
   color: var(--w-color-text-meta, #666);
 }
+
+/* Editor container needs relative positioning for floating button */
+.wagtail-html-editor {
+  position: relative;
+}
+
+/* Fullscreen toggle button - floating at top-right of editor */
+.wagtail-html-editor__fullscreen-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  color: #333333;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+  opacity: 0.8;
+}
+
+.wagtail-html-editor__fullscreen-toggle:hover {
+  background-color: #f0f0f0;
+  border-color: #999999;
+  opacity: 1;
+}
+
+.wagtail-html-editor__fullscreen-toggle:focus {
+  outline: 2px solid #999999;
+  outline-offset: 2px;
+  background-color: #f0f0f0;
+}
+
+.wagtail-html-editor__fullscreen-toggle:focus-visible {
+  outline: 2px solid #999999;
+  outline-offset: 2px;
+}
+
+.wagtail-html-editor__fullscreen-toggle svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* Dark mode support for fullscreen button */
+.w-theme-dark .wagtail-html-editor__fullscreen-toggle {
+  background-color: #262626;
+  border-color: #404040;
+  color: #e0e0e0;
+}
+
+.w-theme-dark .wagtail-html-editor__fullscreen-toggle:hover {
+  background-color: #333333;
+  border-color: #666666;
+}
+
+.w-theme-dark .wagtail-html-editor__fullscreen-toggle:focus {
+  outline-color: #666666;
+  background-color: #333333;
+}
+
+/* System dark mode preference */
+@media (prefers-color-scheme: dark) {
+  .w-theme-system .wagtail-html-editor__fullscreen-toggle {
+    background-color: #262626;
+    border-color: #404040;
+    color: #e0e0e0;
+  }
+
+  .w-theme-system .wagtail-html-editor__fullscreen-toggle:hover {
+    background-color: #333333;
+    border-color: #666666;
+  }
+
+  .w-theme-system .wagtail-html-editor__fullscreen-toggle:focus {
+    outline-color: #666666;
+    background-color: #333333;
+  }
+}
+
+/* Fullscreen mode - preserves right side panel */
+.wagtail-html-editor--fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: var(--form-side-width, 0px) !important;
+  bottom: 0 !important;
+  width: auto !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  background-color: var(--w-color-surface-page, #fff);
+  border: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  animation: fullscreen-enter 0.2s ease-out;
+}
+
+@keyframes fullscreen-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fullscreen exit animation */
+.wagtail-html-editor--fullscreen-exit {
+  animation: fullscreen-exit 0.15s ease-in forwards;
+}
+
+@keyframes fullscreen-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.wagtail-html-editor--fullscreen .cm-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wagtail-html-editor--fullscreen .cm-scroller {
+  min-height: 0;
+  max-height: none;
+  flex: 1;
+  overflow: auto;
+}
+
+.wagtail-html-editor--fullscreen .wagtail-html-editor__fullscreen-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  margin: 0;
+  z-index: 10;
+}

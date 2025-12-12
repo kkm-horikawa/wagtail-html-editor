@@ -122,6 +122,133 @@ function mergeConfig(
   return merged
 }
 
+// SVG icons for fullscreen button
+const ICON_EXPAND = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`
+const ICON_COMPRESS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>`
+
+/**
+ * Create fullscreen toggle button and attach to container
+ * Returns cleanup function to remove event listeners
+ */
+function createFullscreenButton(container: HTMLElement): {
+  button: HTMLButtonElement
+  cleanup: () => void
+} {
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.className = 'wagtail-html-editor__fullscreen-toggle'
+  button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`
+  button.setAttribute('aria-label', 'Toggle fullscreen mode')
+
+  let isFullscreen = false
+
+  // Create a placeholder element to mark the original position
+  const placeholder = document.createElement('span')
+  placeholder.style.display = 'none'
+  placeholder.setAttribute('data-wagtail-html-editor-placeholder', 'true')
+
+  // ResizeObserver for side panel width changes
+  let resizeObserver: ResizeObserver | null = null
+
+  const updateSidePanelWidth = () => {
+    const formSide = document.querySelector('.form-side')
+    if (formSide && formSide instanceof HTMLElement) {
+      const isOpen = formSide.classList.contains('form-side--open')
+      if (isOpen) {
+        container.style.setProperty(
+          '--form-side-width',
+          `${formSide.offsetWidth}px`,
+        )
+      } else {
+        container.style.setProperty('--form-side-width', '0px')
+      }
+    }
+  }
+
+  const exitFullscreen = () => {
+    // Stop watching side panel resize
+    if (resizeObserver) {
+      resizeObserver.disconnect()
+      resizeObserver = null
+    }
+
+    // Remove ESC key listener
+    document.removeEventListener('keydown', handleKeyDown)
+
+    // Restore container to original position (before placeholder)
+    container.classList.remove(
+      'wagtail-html-editor--fullscreen',
+      'wagtail-html-editor--fullscreen-exit',
+    )
+    placeholder.parentNode?.insertBefore(container, placeholder)
+    placeholder.remove()
+
+    container.style.removeProperty('--form-side-width')
+    button.innerHTML = `${ICON_EXPAND}<span>Fullscreen</span>`
+    button.setAttribute('aria-label', 'Toggle fullscreen mode')
+  }
+
+  const triggerExit = () => {
+    if (!isFullscreen) return
+    isFullscreen = false
+    container.classList.add('wagtail-html-editor--fullscreen-exit')
+    setTimeout(exitFullscreen, 150)
+  }
+
+  // ESC key handler
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && isFullscreen) {
+      e.preventDefault()
+      triggerExit()
+    }
+  }
+
+  button.addEventListener('click', () => {
+    if (!isFullscreen) {
+      // Enter fullscreen
+      isFullscreen = true
+      container.classList.add('wagtail-html-editor--fullscreen')
+
+      // Insert placeholder before container to mark original position
+      container.parentNode?.insertBefore(placeholder, container)
+
+      // Set initial side panel width
+      updateSidePanelWidth()
+
+      // Watch for side panel resize
+      const formSide = document.querySelector('.form-side')
+      if (formSide) {
+        resizeObserver = new ResizeObserver(() => {
+          updateSidePanelWidth()
+        })
+        resizeObserver.observe(formSide)
+      }
+
+      // Move container to body to escape any transform/contain contexts
+      document.body.appendChild(container)
+
+      // Add ESC key listener
+      document.addEventListener('keydown', handleKeyDown)
+
+      button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`
+      button.setAttribute('aria-label', 'Exit fullscreen mode')
+    } else {
+      triggerExit()
+    }
+  })
+
+  // Insert button inside container (floating at top-right via CSS)
+  container.appendChild(button)
+
+  return {
+    button,
+    cleanup: () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      button.remove()
+    },
+  }
+}
+
 /**
  * Editor instance returned by initEditor
  */
@@ -251,6 +378,9 @@ export function initEditor(
     parent: container,
   })
 
+  // Create fullscreen toggle button
+  const { cleanup: cleanupFullscreen } = createFullscreenButton(container)
+
   // Set up theme change observer (only if darkMode wasn't explicitly set)
   let stopObserving: (() => void) | null = null
   if (options.darkMode === undefined) {
@@ -268,6 +398,7 @@ export function initEditor(
     options: resolvedOptions,
     destroy: () => {
       stopObserving?.()
+      cleanupFullscreen()
       view.destroy()
       container.remove()
       textarea.removeAttribute(DATA_INITIALIZED)
