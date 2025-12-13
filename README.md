@@ -33,6 +33,9 @@ This library is designed as a **standalone package** that enhances Wagtail's HTM
 - **SVG Content** - Edit inline SVG with syntax support
 - **Script Injection** - Add custom scripts with proper code editing
 
+![demo](https://github.com/user-attachments/assets/cb6f4c68-6ee4-46a5-ba1f-7f3e596085ef)
+
+
 ## Installation
 
 ```bash
