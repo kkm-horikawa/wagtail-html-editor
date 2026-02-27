@@ -298,9 +298,10 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
   }
 
   // Add keymaps
-  // Priority: 1. Completion keymap (Enter/arrows for popup)
-  //           2. Default keymap + history
-  //           3. Tab: try acceptCompletion first, then indent
+  // Priority: 1. Search keymap (Mod-f open, Escape close)
+  //           2. Completion keymap (Enter/arrows for popup)
+  //           3. Default keymap + history
+  //           4. Tab: try acceptCompletion first, then indent
   extensions.push(
     keymap.of([
       ...searchKeymap,
