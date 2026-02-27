@@ -152,6 +152,113 @@
   color: var(--w-color-text-meta, #666);
 }
 
+/* Search panel */
+.wagtail-html-editor .cm-search {
+  background-color: var(--w-color-surface-field, #f8f8f8);
+  color: var(--w-color-text-context, #333);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--w-color-border-field-default, #e0e0e0);
+}
+
+.wagtail-html-editor .cm-search label {
+  color: var(--w-color-text-context, #333);
+}
+
+.wagtail-html-editor .cm-search input[type="text"],
+.wagtail-html-editor .cm-search input[type="checkbox"] {
+  background-color: var(--w-color-surface-page, #fff);
+  color: var(--w-color-text-context, #333);
+  border: 1px solid var(--w-color-border-field-default, #ccc);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.wagtail-html-editor .cm-search input[type="text"]:focus {
+  border-color: var(--w-color-border-field-focus, #007d7e);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--w-color-focus, rgba(0, 125, 126, 0.3));
+}
+
+.wagtail-html-editor .cm-search button {
+  background-color: var(--w-color-surface-button-default, #e8e8e8);
+  color: var(--w-color-text-context, #333);
+  border: 1px solid var(--w-color-border-field-default, #ccc);
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.wagtail-html-editor .cm-search button:hover {
+  background-color: var(--w-color-surface-button-hover, #d0d0d0);
+}
+
+.wagtail-html-editor .cm-search button[name="close"] {
+  color: var(--w-color-text-meta, #666);
+}
+
+/* Dark mode for search panel */
+.w-theme-dark .wagtail-html-editor .cm-search {
+  background-color: #262626;
+  color: #e0e0e0;
+  border-bottom-color: #404040;
+}
+
+.w-theme-dark .wagtail-html-editor .cm-search label {
+  color: #e0e0e0;
+}
+
+.w-theme-dark .wagtail-html-editor .cm-search input[type="text"],
+.w-theme-dark .wagtail-html-editor .cm-search input[type="checkbox"] {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border-color: #404040;
+}
+
+.w-theme-dark .wagtail-html-editor .cm-search button {
+  background-color: #333333;
+  color: #e0e0e0;
+  border-color: #404040;
+}
+
+.w-theme-dark .wagtail-html-editor .cm-search button:hover {
+  background-color: #444444;
+}
+
+/* System dark mode preference for search panel */
+@media (prefers-color-scheme: dark) {
+  .w-theme-system .wagtail-html-editor .cm-search {
+    background-color: #262626;
+    color: #e0e0e0;
+    border-bottom-color: #404040;
+  }
+
+  .w-theme-system .wagtail-html-editor .cm-search label {
+    color: #e0e0e0;
+  }
+
+  .w-theme-system .wagtail-html-editor .cm-search input[type="text"],
+  .w-theme-system .wagtail-html-editor .cm-search input[type="checkbox"] {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border-color: #404040;
+  }
+
+  .w-theme-system .wagtail-html-editor .cm-search button {
+    background-color: #333333;
+    color: #e0e0e0;
+    border-color: #404040;
+  }
+
+  .w-theme-system .wagtail-html-editor .cm-search button:hover {
+    background-color: #444444;
+  }
+}
+
 /* Editor container needs relative positioning for floating button */
 .wagtail-html-editor {
   position: relative;

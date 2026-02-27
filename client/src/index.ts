@@ -21,6 +21,7 @@ import {
 } from '@codemirror/commands'
 import { html, htmlLanguage } from '@codemirror/lang-html'
 import { bracketMatching, indentUnit } from '@codemirror/language'
+import { openSearchPanel, search, searchKeymap } from '@codemirror/search'
 import { Compartment, type Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
@@ -173,7 +174,7 @@ function createFullscreenButton(container: HTMLElement): {
     }
 
     // Remove ESC key listener
-    document.removeEventListener('keydown', handleKeyDown)
+    document.removeEventListener('keydown', handleKeyDown, true)
 
     // Restore container to original position (before placeholder)
     container.classList.remove(
@@ -195,9 +196,10 @@ function createFullscreenButton(container: HTMLElement): {
     setTimeout(exitFullscreen, 150)
   }
 
-  // ESC key handler
+  // ESC key handler - skip if search panel is open (let CodeMirror handle it)
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && isFullscreen) {
+      if (container.querySelector('.cm-search')) return
       e.preventDefault()
       triggerExit()
     }
@@ -228,7 +230,7 @@ function createFullscreenButton(container: HTMLElement): {
       document.body.appendChild(container)
 
       // Add ESC key listener
-      document.addEventListener('keydown', handleKeyDown)
+      document.addEventListener('keydown', handleKeyDown, true)
 
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`
       button.setAttribute('aria-label', 'Exit fullscreen mode')
@@ -243,7 +245,7 @@ function createFullscreenButton(container: HTMLElement): {
   return {
     button,
     cleanup: () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keydown', handleKeyDown, true)
       button.remove()
     },
   }
@@ -283,6 +285,7 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     indentUnit.of(indentStr),
     html(),
     autocompletion(),
+    search(),
   ]
 
   // Add Emmet support if enabled (default: true)
@@ -295,11 +298,17 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
   }
 
   // Add keymaps
-  // Priority: 1. Completion keymap (Enter/arrows for popup)
-  //           2. Default keymap + history
-  //           3. Tab: try acceptCompletion first, then indent
+  // Priority: 1. Search keymap (Mod-f open, Escape close)
+  //              + Mod-h: open search/replace panel (browser history suppressed)
+  //           2. Completion keymap (Enter/arrows for popup)
+  //           3. Default keymap + history
+  //           4. Tab: try acceptCompletion first, then indent
   extensions.push(
     keymap.of([
+      ...searchKeymap,
+      // Mod-h opens the search panel (which includes replace), suppressing the
+      // browser's native "open history" shortcut
+      { key: 'Mod-h', run: openSearchPanel, preventDefault: true },
       ...completionKeymap,
       ...defaultKeymap,
       ...historyKeymap,

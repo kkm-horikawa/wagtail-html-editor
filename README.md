@@ -1,7 +1,10 @@
 # wagtail-html-editor
 
 [![PyPI version](https://badge.fury.io/py/wagtail-html-editor.svg)](https://badge.fury.io/py/wagtail-html-editor)
+[![Downloads](https://static.pepy.tech/badge/wagtail-html-editor)](https://pepy.tech/project/wagtail-html-editor)
+[![Published on Django Packages](https://img.shields.io/badge/Published%20on-Django%20Packages-0c3c26)](https://djangopackages.org/packages/p/wagtail-html-editor/)
 [![CI](https://github.com/kkm-horikawa/wagtail-html-editor/actions/workflows/ci.yml/badge.svg)](https://github.com/kkm-horikawa/wagtail-html-editor/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/kkm-horikawa/wagtail-html-editor/branch/develop/graph/badge.svg)](https://codecov.io/gh/kkm-horikawa/wagtail-html-editor)
 [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Philosophy
@@ -19,6 +22,7 @@ This library is designed as a **standalone package** that enhances Wagtail's HTM
 - **Dark/Light Mode** - Follows Wagtail admin theme or manual toggle
 - **HTML Autocomplete** - Tag completion, attribute suggestions
 - **Emmet Support** - Expand abbreviations (e.g., `div.container>ul>li*3`)
+- **Search & Replace** - Find and replace text with keyboard shortcuts (Ctrl+F / Ctrl+H)
 - **Fullscreen Mode** - Expand editor to use the full panel for comfortable coding
 - **Auto-closing Tags** - Automatic closing tag insertion
 - **Lightweight** - Built on CodeMirror 6 with minimal bundle size
@@ -30,6 +34,9 @@ This library is designed as a **standalone package** that enhances Wagtail's HTM
 - **Email Templates** - Create HTML email templates with visual feedback
 - **SVG Content** - Edit inline SVG with syntax support
 - **Script Injection** - Add custom scripts with proper code editing
+
+![demo](https://github.com/user-attachments/assets/cb6f4c68-6ee4-46a5-ba1f-7f3e596085ef)
+
 
 ## Installation
 
@@ -131,6 +138,20 @@ Expand abbreviations with Tab:
 | `ul>li*3` | `<ul><li></li><li></li><li></li></ul>` |
 | `a[href=#]` | `<a href="#"></a>` |
 | `!` | HTML5 boilerplate |
+
+### Search & Replace
+
+Use keyboard shortcuts to open the search panel:
+
+| Action | Windows / Linux | macOS |
+|--------|----------------|-------|
+| Open search | Ctrl+F | Cmd+F |
+| Open search & replace | Ctrl+H | Cmd+H |
+| Next match | F3 or Ctrl+G | F3 or Cmd+G |
+| Previous match | Shift+F3 or Shift+Ctrl+G | Shift+F3 or Shift+Cmd+G |
+| Close panel | Escape | Escape |
+
+When in fullscreen mode, pressing Escape closes the search panel without exiting fullscreen.
 
 ### Fullscreen Mode
 
