@@ -21,7 +21,7 @@ import {
 } from '@codemirror/commands'
 import { html, htmlLanguage } from '@codemirror/lang-html'
 import { bracketMatching, indentUnit } from '@codemirror/language'
-import { search, searchKeymap } from '@codemirror/search'
+import { openSearchPanel, search, searchKeymap } from '@codemirror/search'
 import { Compartment, type Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
@@ -299,12 +299,16 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
 
   // Add keymaps
   // Priority: 1. Search keymap (Mod-f open, Escape close)
+  //              + Mod-h: open search/replace panel (browser history suppressed)
   //           2. Completion keymap (Enter/arrows for popup)
   //           3. Default keymap + history
   //           4. Tab: try acceptCompletion first, then indent
   extensions.push(
     keymap.of([
       ...searchKeymap,
+      // Mod-h opens the search panel (which includes replace), suppressing the
+      // browser's native "open history" shortcut
+      { key: 'Mod-h', run: openSearchPanel, preventDefault: true },
       ...completionKeymap,
       ...defaultKeymap,
       ...historyKeymap,
