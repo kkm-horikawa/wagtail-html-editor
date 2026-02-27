@@ -22,6 +22,7 @@ This library is designed as a **standalone package** that enhances Wagtail's HTM
 - **Dark/Light Mode** - Follows Wagtail admin theme or manual toggle
 - **HTML Autocomplete** - Tag completion, attribute suggestions
 - **Emmet Support** - Expand abbreviations (e.g., `div.container>ul>li*3`)
+- **Search & Replace** - Find and replace text with keyboard shortcuts (Ctrl+F / Ctrl+H)
 - **Fullscreen Mode** - Expand editor to use the full panel for comfortable coding
 - **Auto-closing Tags** - Automatic closing tag insertion
 - **Lightweight** - Built on CodeMirror 6 with minimal bundle size
@@ -137,6 +138,20 @@ Expand abbreviations with Tab:
 | `ul>li*3` | `<ul><li></li><li></li><li></li></ul>` |
 | `a[href=#]` | `<a href="#"></a>` |
 | `!` | HTML5 boilerplate |
+
+### Search & Replace
+
+Use keyboard shortcuts to open the search panel:
+
+| Action | Windows / Linux | macOS |
+|--------|----------------|-------|
+| Open search | Ctrl+F | Cmd+F |
+| Open search & replace | Ctrl+H | Cmd+H |
+| Next match | F3 or Ctrl+G | F3 or Cmd+G |
+| Previous match | Shift+F3 or Shift+Ctrl+G | Shift+F3 or Shift+Cmd+G |
+| Close panel | Escape | Escape |
+
+When in fullscreen mode, pressing Escape closes the search panel without exiting fullscreen.
 
 ### Fullscreen Mode
 
