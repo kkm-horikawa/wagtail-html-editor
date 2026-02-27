@@ -31008,7 +31008,7 @@ function createFullscreenButton(container) {
       resizeObserver.disconnect();
       resizeObserver = null;
     }
-    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("keydown", handleKeyDown, true);
     container.classList.remove(
       "wagtail-html-editor--fullscreen",
       "wagtail-html-editor--fullscreen-exit"
@@ -31047,7 +31047,7 @@ function createFullscreenButton(container) {
         resizeObserver.observe(formSide);
       }
       document.body.appendChild(container);
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown, true);
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`;
       button.setAttribute("aria-label", "Exit fullscreen mode");
     } else {
@@ -31058,7 +31058,7 @@ function createFullscreenButton(container) {
   return {
     button,
     cleanup: () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown, true);
       button.remove();
     }
   };
@@ -31088,6 +31088,9 @@ function createBaseExtensions(options = {}) {
   extensions.push(
     keymap.of([
       ...searchKeymap,
+      // Mod-h opens the search panel (which includes replace), suppressing the
+      // browser's native "open history" shortcut
+      { key: "Mod-h", run: openSearchPanel, preventDefault: true },
       ...completionKeymap,
       ...defaultKeymap,
       ...historyKeymap,

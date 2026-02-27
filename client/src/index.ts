@@ -174,7 +174,7 @@ function createFullscreenButton(container: HTMLElement): {
     }
 
     // Remove ESC key listener
-    document.removeEventListener('keydown', handleKeyDown)
+    document.removeEventListener('keydown', handleKeyDown, true)
 
     // Restore container to original position (before placeholder)
     container.classList.remove(
@@ -230,7 +230,7 @@ function createFullscreenButton(container: HTMLElement): {
       document.body.appendChild(container)
 
       // Add ESC key listener
-      document.addEventListener('keydown', handleKeyDown)
+      document.addEventListener('keydown', handleKeyDown, true)
 
       button.innerHTML = `${ICON_COMPRESS}<span>Exit</span>`
       button.setAttribute('aria-label', 'Exit fullscreen mode')
@@ -245,7 +245,7 @@ function createFullscreenButton(container: HTMLElement): {
   return {
     button,
     cleanup: () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('keydown', handleKeyDown, true)
       button.remove()
     },
   }
