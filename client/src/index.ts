@@ -21,6 +21,7 @@ import {
 } from '@codemirror/commands'
 import { html, htmlLanguage } from '@codemirror/lang-html'
 import { bracketMatching, indentUnit } from '@codemirror/language'
+import { search, searchKeymap } from '@codemirror/search'
 import { Compartment, type Extension } from '@codemirror/state'
 import { EditorState } from '@codemirror/state'
 import {
@@ -195,9 +196,10 @@ function createFullscreenButton(container: HTMLElement): {
     setTimeout(exitFullscreen, 150)
   }
 
-  // ESC key handler
+  // ESC key handler - skip if search panel is open (let CodeMirror handle it)
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && isFullscreen) {
+      if (container.querySelector('.cm-search')) return
       e.preventDefault()
       triggerExit()
     }
@@ -283,6 +285,7 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
     indentUnit.of(indentStr),
     html(),
     autocompletion(),
+    search(),
   ]
 
   // Add Emmet support if enabled (default: true)
@@ -300,6 +303,7 @@ function createBaseExtensions(options: EditorOptions = {}): Extension[] {
   //           3. Tab: try acceptCompletion first, then indent
   extensions.push(
     keymap.of([
+      ...searchKeymap,
       ...completionKeymap,
       ...defaultKeymap,
       ...historyKeymap,
